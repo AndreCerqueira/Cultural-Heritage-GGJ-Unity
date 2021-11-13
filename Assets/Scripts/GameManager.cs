@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    
     static public CanvasGroup dialogWindow;
 
     // Start is called before the first frame update
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     public void showWindow(int window)
     {
+        
         CanvasGroup windowObject = getWindowByID(window);
 
         StartCoroutine(DoFadeIn(windowObject));
@@ -55,6 +57,8 @@ public class GameManager : MonoBehaviour
 
         canvasG.interactable = false;
         canvasG.blocksRaycasts = false;
+        StarterAssets.StarterAssetsInputs.SetCursorState(true);
+        StarterAssets.ThirdPersonController.LockCameraPosition = false;
     }
 
 
@@ -68,5 +72,7 @@ public class GameManager : MonoBehaviour
 
         canvasG.interactable = true;
         canvasG.blocksRaycasts = true;
+        StarterAssets.StarterAssetsInputs.SetCursorState(false);
+        StarterAssets.ThirdPersonController.LockCameraPosition = true;
     }
 }

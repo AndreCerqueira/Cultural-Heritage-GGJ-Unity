@@ -57,7 +57,7 @@ namespace StarterAssets
 		[Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
 		public float CameraAngleOverride = 0.0f;
 		[Tooltip("For locking the camera position on all axis")]
-		public bool LockCameraPosition = false;
+		static public bool LockCameraPosition = false;
 
 		// cinemachine
 		private float _cinemachineTargetYaw;
@@ -117,9 +117,12 @@ namespace StarterAssets
 		{
 			_hasAnimator = TryGetComponent(out _animator);
 			
-			JumpAndGravity();
-			GroundedCheck();
-			Move();
+			if (!Player.attacking)
+            {
+				JumpAndGravity();
+				GroundedCheck();
+				Move();
+			}
 		}
 
 		private void LateUpdate()

@@ -1,23 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    const float CHASE_DIST = 5;
+    const float ATTACK_DIST = 2;
+
     [SerializeField] 
     Transform[] waypoints;
     [SerializeField]
     float waitingTime;
     NavMeshAgent agent;
     GameObject player;
+    Slider healthBar;
     int index;
-    float dist = 5;
+
+    float _health;
+    public float health
+    {
+        get { return _health; }
+        set
+        {
+            _health = value;
+            healthBar.value = value;
+
+            if (_health <= 0)
+            {
+                death();
+            }
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        healthBar = GetComponentInChildren<Slider>();
+        health = 100;
         player = GameObject.Find("Player");
         changeDestination();
         StartCoroutine(patrol());
@@ -27,6 +50,8 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         chase();
+
+        attack();
     }
 
     IEnumerator patrol() 
@@ -51,10 +76,25 @@ public class Enemy : MonoBehaviour
 
     void chase()
     {
-        
-        if (Vector3.Distance(transform.position, player.transform.position) < dist)
+        if (Vector3.Distance(transform.position, player.transform.position) < CHASE_DIST)
             agent.destination = player.transform.position;
-
     }
 
+    void attack()
+    {
+        if (Vector3.Distance(transform.position, player.transform.position) <= ATTACK_DIST) 
+        {
+            player.GetComponent<Player>().takeDamage(10);
+        }
+    }
+
+    void death()
+    {
+        Destroy(gameObject);
+    }
+
+    public void takeDamage(int damage)
+    {
+        health -= damage;
+    }
 }

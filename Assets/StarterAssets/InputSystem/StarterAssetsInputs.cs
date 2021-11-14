@@ -89,7 +89,8 @@ namespace StarterAssets
 
 		public void AttackInput(bool newInteractState)
 		{
-			attack = newInteractState;
+			if (!Player.openUI && !Player.attacking)
+				attack = newInteractState;
 		}
 
 #if !UNITY_IOS || !UNITY_ANDROID

@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     
     static public CanvasGroup dialogWindow;
+    static public CanvasGroup reviveWindow;
 
     // Start is called before the first frame update
     void Start()
     {
         dialogWindow = GameObject.Find("Canvas/dialogWindow").GetComponent<CanvasGroup>();
+        reviveWindow = GameObject.Find("Canvas/reviveWindow").GetComponent<CanvasGroup>();
     }
 
     // Update is called once per frame
@@ -19,11 +22,15 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public void revive()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void showWindow(int window)
     {
-        
         CanvasGroup windowObject = getWindowByID(window);
-
+        Player.openUI = true;
         StartCoroutine(DoFadeIn(windowObject));
     }
 
@@ -31,7 +38,7 @@ public class GameManager : MonoBehaviour
     public void closeWindow(int window)
     {
         CanvasGroup windowObject = getWindowByID(window);
-
+        
         StartCoroutine(DoFadeOut(windowObject));
     }
 
@@ -42,6 +49,8 @@ public class GameManager : MonoBehaviour
         {
             case 0:
                 return dialogWindow;
+            case 1:
+                return reviveWindow;
             default:
                 return null;
         }
@@ -55,6 +64,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        Player.openUI = false;
         canvasG.interactable = false;
         canvasG.blocksRaycasts = false;
         StarterAssets.StarterAssetsInputs.SetCursorState(true);

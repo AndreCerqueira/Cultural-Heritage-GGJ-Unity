@@ -84,7 +84,10 @@ public class Enemy : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, player.transform.position) <= ATTACK_DIST) 
         {
-            player.GetComponent<Player>().takeDamage(10);
+            Player _player = player.GetComponent<Player>();
+
+            if (_player.health > 0)
+                _player.GetComponent<Player>().takeDamage(10);
         }
     }
 

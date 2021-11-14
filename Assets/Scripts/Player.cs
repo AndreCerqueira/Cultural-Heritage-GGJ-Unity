@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     const float DAMAGE_AREA = 0.5f;
 
     static public bool attacking;
+    static public bool openUI;
     float attackTimeDelay;
     float _health;
     StarterAssetsInputs input;
@@ -26,6 +27,11 @@ public class Player : MonoBehaviour
             _health = value;
             healthBar.value = value;
             healthBarText.text = "Health: " + value + "%";
+
+            if (_health <= 0)
+            {
+                death();
+            }
         }
     }
 
@@ -47,6 +53,7 @@ public class Player : MonoBehaviour
         if (input.interact) 
         {
             checkNpc();
+            openUI = true;
             input.interact = false;
         }
 
@@ -114,17 +121,24 @@ public class Player : MonoBehaviour
 
         if (attackTimeDelay > 3f)
         {
-            health -= damage;
+            health -= damage;//damage;
             attackTimeDelay = 0;
         }
         
     }
 
+    void death()
+    {
+        StartCoroutine(GameManager.DoFadeIn(GameManager.reviveWindow));
+        animator.SetTrigger("Death");
+        this.enabled = false;
+        GetComponent<ThirdPersonController>().enabled = false;
+    }
 
-    public GameObject tempBroom;
+    //public GameObject tempBroom;
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(tempBroom.transform.position, DAMAGE_AREA);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawWireSphere(tempBroom.transform.position, DAMAGE_AREA);
     }
 }

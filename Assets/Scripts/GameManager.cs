@@ -6,14 +6,18 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     
+    static public int artifactCounter;
+
     static public CanvasGroup dialogWindow;
     static public CanvasGroup reviveWindow;
+    static public CanvasGroup tipWindow;
 
     // Start is called before the first frame update
     void Start()
     {
         dialogWindow = GameObject.Find("Canvas/dialogWindow").GetComponent<CanvasGroup>();
         reviveWindow = GameObject.Find("Canvas/reviveWindow").GetComponent<CanvasGroup>();
+        tipWindow = GameObject.Find("Canvas/tipWindow").GetComponent<CanvasGroup>();
     }
 
     // Update is called once per frame
@@ -67,8 +71,12 @@ public class GameManager : MonoBehaviour
         Player.openUI = false;
         canvasG.interactable = false;
         canvasG.blocksRaycasts = false;
-        StarterAssets.StarterAssetsInputs.SetCursorState(true);
-        StarterAssets.ThirdPersonController.LockCameraPosition = false;
+
+        if (canvasG.name != "tipWindow") 
+        { 
+            StarterAssets.StarterAssetsInputs.SetCursorState(true);
+            StarterAssets.ThirdPersonController.LockCameraPosition = false;
+        }
     }
 
 
@@ -82,7 +90,10 @@ public class GameManager : MonoBehaviour
 
         canvasG.interactable = true;
         canvasG.blocksRaycasts = true;
-        StarterAssets.StarterAssetsInputs.SetCursorState(false);
-        StarterAssets.ThirdPersonController.LockCameraPosition = true;
+        if (canvasG.name != "tipWindow")
+        {
+            StarterAssets.StarterAssetsInputs.SetCursorState(false);
+            StarterAssets.ThirdPersonController.LockCameraPosition = true;
+        }
     }
 }

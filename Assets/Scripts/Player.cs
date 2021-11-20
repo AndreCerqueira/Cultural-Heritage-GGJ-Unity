@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     const float INTERACTION_AREA = 1;
     const float DAMAGE_AREA = 0.5f;
 
+    static public GameObject nearItem;
     static public bool attacking;
     static public bool openUI;
     float attackTimeDelay;
@@ -52,9 +53,19 @@ public class Player : MonoBehaviour
     {
         if (input.interact) 
         {
-            checkNpc();
-            openUI = true;
-            input.interact = false;
+            if (nearItem != null)
+            {
+                animator.SetTrigger("Pick");
+                StartCoroutine(collectItem(nearItem));
+                nearItem = null;
+                
+            }
+            else 
+            { 
+                checkNpc();
+                openUI = true;
+                input.interact = false;
+            }
         }
 
         attack();
@@ -80,12 +91,21 @@ public class Player : MonoBehaviour
     {
         if (input.attack && !attacking) 
         {
-            print("atacou");
             input.attack = false;
             attacking = true;
             animator.SetTrigger("Attack");
+            StartCoroutine(attackAudio());
             StartCoroutine(findContact());
         }
+    }
+
+    public IEnumerator attackAudio()
+    {
+        while (animator.GetFloat("Curve") < 0.3f)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+        GetComponent<AudioSource>().Play();
     }
 
     public IEnumerator findContact()
@@ -96,16 +116,19 @@ public class Player : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
 
-            Collider[] hitColliders = Physics.OverlapSphere(weapon.transform.position, DAMAGE_AREA);
-            foreach (var hitCollider in hitColliders)
+            if (animator.GetFloat("Curve") > 0.3f) 
             {
-                if (hitCollider.CompareTag("Enemy"))
-                {
-                    // MELHORAR O MOMENTO EM QUE ISTO ACONTECE COM O CURVE
-                    hitCollider.GetComponent<Enemy>().takeDamage(20);
-                    contact = true;
-                }
                 
+                Collider[] hitColliders = Physics.OverlapSphere(weapon.transform.position, DAMAGE_AREA);
+                foreach (var hitCollider in hitColliders)
+                {
+                    if (hitCollider.CompareTag("Enemy"))
+                    {
+                        hitCollider.GetComponent<Enemy>().takeDamage(20);
+                        contact = true;
+                    }
+                
+                }
             }
         }
     }
@@ -133,6 +156,21 @@ public class Player : MonoBehaviour
         animator.SetTrigger("Death");
         this.enabled = false;
         GetComponent<ThirdPersonController>().enabled = false;
+    }
+
+    public IEnumerator collectItem(GameObject obj)
+    {
+        while (animator.GetFloat("Curve") < 0.4f)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        // display audio
+        Destroy(obj);
+        Text text = GameObject.Find("Canvas/Artifact Counter/counter").GetComponent<Text>();
+        GameManager.artifactCounter++;
+        text.text = GameManager.artifactCounter + "/3";
+        StartCoroutine(GameManager.DoFadeOut(GameManager.tipWindow));
     }
 
     //public GameObject tempBroom;

@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     float waitingTime;
     NavMeshAgent agent;
     GameObject player;
+    Animator animator;
     Slider healthBar;
     int index;
 
@@ -39,6 +40,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         healthBar = GetComponentInChildren<Slider>();
         health = 100;
         player = GameObject.Find("Player");
@@ -49,6 +51,8 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        animator.SetFloat("Andar", agent.velocity.magnitude);
+
         chase();
 
         attack();
@@ -85,10 +89,16 @@ public class Enemy : MonoBehaviour
         if (Vector3.Distance(transform.position, player.transform.position) <= ATTACK_DIST) 
         {
             Player _player = player.GetComponent<Player>();
+            animator.SetTrigger("Attack");
 
             if (_player.health > 0)
-                _player.GetComponent<Player>().takeDamage(10);
+                Invoke("dealDamage", 0.1f);
         }
+    }
+
+    void dealDamage()
+    {
+        player.GetComponent<Player>().takeDamage(10);
     }
 
     void death()

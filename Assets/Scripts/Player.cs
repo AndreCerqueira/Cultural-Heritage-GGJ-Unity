@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         healthBarText = GameObject.Find("Canvas/HealthBar/Fill Area/Text").GetComponent<Text>();
         weapon = GameObject.Find("Broom/Box13");
         health = 100;
+        StartCoroutine(regen());
     }
 
     // Update is called once per frame
@@ -171,6 +172,17 @@ public class Player : MonoBehaviour
         GameManager.artifactCounter++;
         text.text = GameManager.artifactCounter + "/3";
         StartCoroutine(GameManager.DoFadeOut(GameManager.tipWindow));
+    }
+
+    public IEnumerator regen()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(10f);
+
+            if (health > 0 && health < 100)
+                health += 10;
+        }
     }
 
     //public GameObject tempBroom;

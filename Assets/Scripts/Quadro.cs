@@ -18,8 +18,12 @@ public class Quadro : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        print("entrou");
+
+
         if (input.interact && contact)
         {
+            print("entrouuuuu");
             SceneManager.LoadScene("Egypt");
         }
     }

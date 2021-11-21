@@ -16,7 +16,8 @@ public class Player : MonoBehaviour
     float _health;
     StarterAssetsInputs input;
     Animator animator;
-    GameObject weapon;
+    //GameObject weapon;
+    public GameObject tempBroom;
 
     Slider healthBar;
     Text healthBarText;
@@ -44,7 +45,7 @@ public class Player : MonoBehaviour
 
         healthBar = GameObject.Find("Canvas/HealthBar").GetComponent<Slider>();
         healthBarText = GameObject.Find("Canvas/HealthBar/Fill Area/Text").GetComponent<Text>();
-        weapon = GameObject.Find("Broom/Box13");
+        //weapon = GameObject.Find("Broom/Box13");
         health = 100;
         StartCoroutine(regen());
     }
@@ -120,7 +121,7 @@ public class Player : MonoBehaviour
             if (animator.GetFloat("Curve") > 0.3f) 
             {
                 
-                Collider[] hitColliders = Physics.OverlapSphere(weapon.transform.position, DAMAGE_AREA);
+                Collider[] hitColliders = Physics.OverlapSphere(tempBroom.transform.position, DAMAGE_AREA);
                 foreach (var hitCollider in hitColliders)
                 {
                     if (hitCollider.CompareTag("Enemy"))
@@ -170,7 +171,7 @@ public class Player : MonoBehaviour
         Destroy(obj);
         Text text = GameObject.Find("Canvas/Artifact Counter/counter").GetComponent<Text>();
         GameManager.artifactCounter++;
-        text.text = GameManager.artifactCounter + "/3";
+        text.text = GameManager.artifactCounter + "/5";
         StartCoroutine(GameManager.DoFadeOut(GameManager.tipWindow));
     }
 
@@ -184,11 +185,10 @@ public class Player : MonoBehaviour
                 health += 10;
         }
     }
-
-    //public GameObject tempBroom;
+    /*
     void OnDrawGizmos()
     {
-        //Gizmos.color = Color.yellow;
-        //Gizmos.DrawWireSphere(tempBroom.transform.position, DAMAGE_AREA);
-    }
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(tempBroom.transform.position, DAMAGE_AREA);
+    }*/
 }
